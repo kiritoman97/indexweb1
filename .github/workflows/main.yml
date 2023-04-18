@@ -1,0 +1,39 @@
+name: do cron every day
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+
+  workflow_dispatch:
+    inputs:
+      database_url:
+        description: 'db url'
+        required: true
+  
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 720
+    steps:
+    - uses: actions/checkout@master
+    - name: docker registry login
+      run: echo "${{  secrets.DOCKER_CONTAINER_REGISTRY_TOKEN }}" | docker login ghcr.io --username hoangweb --password-stdin
+    
+    - name: Run task
+      if: success()
+      run: |
+        docker run \
+        -e DOMAIN="${{ secrets.DOMAIN }}" \
+        -e SITEMAP_URL="${{ secrets.SITEMAP_URL }}" \
+        -e SC_SERVICE_ACCOUNT_0="${{ secrets.SC_SERVICE_ACCOUNT_0 }}" \
+        -e SC_SERVICE_ACCOUNT_1="${{ secrets.SC_SERVICE_ACCOUNT_1 }}" \
+        -e SC_SERVICE_ACCOUNT_2="${{ secrets.SC_SERVICE_ACCOUNT_2 }}" \
+        -e SC_SERVICE_ACCOUNT_3="${{ secrets.SC_SERVICE_ACCOUNT_3 }}" \
+        -e SC_TOKEN="${{ secrets.SC_TOKEN }}" \
+        -e SC_AuthConfig="${{ secrets.SC_AuthConfig }}" \
+        -e SC_PropertyType="${{ secrets.SC_PropertyType }}" \
+        -e BING_COOKIE="${{ secrets.BING_COOKIE }}" \
+        -e BING_SITE_KEY="${{ secrets.BING_SITE_KEY }}" \
+        -e BING_API_KEY="${{ secrets.BING_API_KEY }}" \
+        -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+        ghcr.io/hoangweb/autoindex:latest
