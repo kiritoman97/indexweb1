@@ -36,4 +36,6 @@ jobs:
         -e BING_SITE_KEY="${{ secrets.BING_SITE_KEY }}" \
         -e BING_API_KEY="${{ secrets.BING_API_KEY }}" \
         -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+        -e telegram_token="${{ secrets.TELEGRAM_TOKEN }}" \
+        -e telegram_chatid="${{ secrets.TELEGRAM_CHATID }}" \
         ghcr.io/hoangweb/autoindex:latest
